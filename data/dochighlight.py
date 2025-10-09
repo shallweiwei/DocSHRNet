@@ -4,7 +4,6 @@ import random
 import cv2
 from torch.utils.data import Dataset
 from torchvision import transforms
-import numpy as np
 
 class DocHighlightDataset(Dataset):
     def __init__(self, base_dir='/media/data2/xhw/final', split='train', spatial_transform=False, patch_size=(512,512)):

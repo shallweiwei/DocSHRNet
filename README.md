@@ -21,7 +21,7 @@ Download the **[DocHighlight dataset](https://github.com/SCUT-DLVCLab/DocHighlig
 conda create -n docshrnet 
 conda activate docshrnet
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu118
-pip install opencv-python numpy pyiqa tqdm matplotlib
+pip install opencv-python pyiqa 
 ```
 
 ### 2. Pre-trained Models
@@ -33,7 +33,7 @@ Download the pre-trained model checkpoints from the official release [here](http
 To restore a single image or a directory of images:
 ```bash
 python infer.py \
-  --input_dir /path/to/dataset/test/highlight \
+  --input_dir /path/to/dataset/ \
   --checkpoint ./checkpoints/docshrnet.pth \
   --output_dir ./results
 ```
@@ -42,7 +42,7 @@ python infer.py \
 For large images, you can use tiled prediction with `window_pred.py`:
 ```bash
 python window_pred.py \
-  --input_dir /path/to/dataset/test/highlight \
+  --input_dir /path/to/dataset/ \
   --checkpoint ./checkpoints/docshrnet.pth \
   --output_dir ./window_results
 ```
@@ -54,7 +54,7 @@ To evaluate the model performance on the test set, run `evaluate.py`. This scrip
 ```bash
 python evaluate.py \
   --pred_dir ./results \
-  --gt_dir /path/to/dataset/test/highlight_free
+  --gt_dir /path/to/dataset/test/
 ```
 
 ---
