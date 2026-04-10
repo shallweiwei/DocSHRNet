@@ -22,7 +22,7 @@ Download the **[DocHighlight dataset](https://github.com/SCUT-DLVCLab/DocHighlig
 conda create -n docshrnet 
 conda activate docshrnet
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu118
-pip install opencv-python pyiqa 
+pip install pyiqa 
 ```
 
 ### 2. Pre-trained Models
