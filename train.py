@@ -99,7 +99,8 @@ def main():
     device = torch.device("cuda", local_rank) if torch.cuda.is_available() else torch.device("cpu")
     dist.init_process_group(backend="nccl", init_method='env://')
     seed_everything(42)
-
+    
+    # Setup logging on rank 0
     if local_rank == 0:
         if not os.path.isdir(args.base_dir):
             raise ValueError(f"Base directory does not exist: {args.base_dir}")
@@ -147,7 +148,8 @@ def main():
         num_workers=4,
         pin_memory=True
     )
-
+    
+    # Build model and wrap with DDP
     model = DocSHRNet(img_channel=3, width=32)
     model = model.to(device)
     model = nn.parallel.DistributedDataParallel(model, device_ids=[local_rank])
@@ -157,6 +159,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.total_iters, eta_min=1e-5)
 
+    # Load pretrained weights or resume from checkpoint
     start_iter = 0
     if args.pretrained:
         if os.path.isfile(args.pretrained):
@@ -200,7 +203,8 @@ def main():
     psnr_metric = pyiqa.create_metric('psnr').to(device)
     ssim_metric = pyiqa.create_metric('ssim', test_y_channel=False).to(device)
     ssim_loss_fn = pyiqa.create_metric('ssim',test_y_channel=False, as_loss=True).to(device)
-
+    
+    # Training loop
     model.train()
     for epoch in range(start_epoch, total_epochs + 1):
         train_sampler.set_epoch(epoch)
