@@ -29,7 +29,7 @@ def seed_everything(seed=42):
 class MultiLayerPerceptualLoss(nn.Module):
     def __init__(self, layers=[5, 10, 19]):
         super(MultiLayerPerceptualLoss, self).__init__()
-        vgg = models.vgg16(pretrained=True).features
+        vgg = models.vgg19(pretrained=True).features
         self.layers = layers
         self.vgg_blocks = nn.ModuleList()
         start = 0
@@ -52,7 +52,7 @@ class MultiLayerPerceptualLoss(nn.Module):
 class StyleLoss(nn.Module):
     def __init__(self, layers=[5, 10, 19]):
         super(StyleLoss, self).__init__()
-        vgg = models.vgg16(pretrained=True).features
+        vgg = models.vgg19(pretrained=True).features
         self.vgg_blocks = nn.ModuleList()
         start = 0
         for l in layers:
@@ -260,7 +260,8 @@ def main():
     if local_rank == 0:
         logging.info("Training finished")
     dist.destroy_process_group()
-
+    
+# Validation function
 def val_model(model, val_loader, device, start_iter, total_iters, local_rank, psnr_metric, ssim_metric):
     model.eval()
     psnr_total = 0
@@ -282,7 +283,8 @@ def val_model(model, val_loader, device, start_iter, total_iters, local_rank, ps
         val_log_message = f'Iter [{start_iter+1}/{total_iters}], Val PSNR: {avg_psnr:.4f}, SSIM: {avg_ssim:.4f}'
         logging.info(val_log_message)
     model.train()
-
+    
+# Save checkpoint
 def save_checkpoint(model, optimizer, scheduler, start_iter, save_path):
     checkpoint = {
         'iter': start_iter+1,
